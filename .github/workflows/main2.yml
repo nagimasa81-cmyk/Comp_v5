@@ -1,0 +1,30 @@
+
+name: Create Master Update Package
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  package:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Create ZIP archive
+        shell: powershell
+        run: |
+          Compress-Archive `
+            -Path "manifest.json","masters","templates","profiles" `
+            -DestinationPath "master_update_current.zip" `
+            -Force
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: master_update_current
+          path: master_update_current.zip
